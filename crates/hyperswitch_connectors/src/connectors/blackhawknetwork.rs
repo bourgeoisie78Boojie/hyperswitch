@@ -455,23 +455,6 @@ impl ConnectorIntegration<Authorize, PaymentsAuthorizeData, PaymentsResponseData
         event_builder.map(|i| i.set_response_body(&response));
         router_env::logger::info!(connector_response=?response);
 
-        let attempt_status = match response.error.as_str() {
-            "amount.null"
-            | "amount.negative"
-            | "retrievalReferenceNumber.invalid"
-            | "storeNumber.invalid"
-            | "terminalNumber.invalid"
-            | "accounts.maxsize.exceeded"
-            | "accounts.minsize.exceeded"
-            | "account.redeem.values.request.accounts.different.productlineids"
-            | "productline.not.found"
-            | "product.not.found"
-            | "productLine.setup.not.complete"
-            | "account.does.not.exist" => Some(enums::AttemptStatus::Failure),
-            "provider.transaction.timeout" => Some(enums::AttemptStatus::Pending),
-            _ => Some(enums::AttemptStatus::Failure),
-        };
-
         Ok(ErrorResponse {
             status_code: res.status_code,
             code: response.error,
@@ -479,7 +462,7 @@ impl ConnectorIntegration<Authorize, PaymentsAuthorizeData, PaymentsResponseData
                 .error_description
                 .unwrap_or(NO_ERROR_MESSAGE.to_owned()),
             reason: Some("Verify redemption details or contact BHN support".to_string()),
-            attempt_status,
+            attempt_status: None,
             connector_transaction_id: None,
             network_advice_code: None,
             network_decline_code: None,
