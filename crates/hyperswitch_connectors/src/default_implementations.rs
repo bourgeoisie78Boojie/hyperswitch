@@ -1435,7 +1435,6 @@ default_imp_for_pre_processing_steps!(
     connectors::Barclaycard,
     connectors::Billwerk,
     connectors::Bitpay,
-    connectors::Blackhawknetwork,
     connectors::Bluesnap,
     connectors::Braintree,
     connectors::Boku,
